@@ -5,7 +5,7 @@ export default function SuccessPopup({ message, onClose }) {
     <div className="success-popup">
       <div className="success-content">
         <p>{message}</p>
-        <button onClick={onClose}>Close</button>
+        <button onClick={onClose}></button>
       </div>
     </div>
   );

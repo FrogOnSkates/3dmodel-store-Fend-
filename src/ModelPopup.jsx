@@ -79,7 +79,7 @@ export default function ModelPopup({ isOpen, onClose, modelTitle, modelUrl, scal
   return (
     <div className="popup">
       <div className="popup-content">
-        <button className="closebutton" onClick={onClose}>Close</button>
+        <button className="closebutton" onClick={onClose}></button>
 
         <div className="popup-body">
           <div className="model-view">

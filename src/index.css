@@ -179,6 +179,10 @@ body {
   border-radius: 8px;
 }
 
+.model-view h2 {
+  color: black;
+}
+
 /* Enquiry Form Styling */
 .enquiry-form {
   width: 100%;
@@ -277,4 +281,47 @@ body {
 
 .success-popup button:hover {
   background-color: #e0e0e0;
+}
+/* Neon glow effect for pagination buttons */
+.pagination button {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background: #111;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.3s ease;
+}
+
+.pagination button:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0ff;
+  border-radius: 5px;
+  filter: blur(5px);
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.pagination button:hover:before {
+  opacity: 1;
+}
+
+.pagination button:active {
+  color: #0ff;
+}
+
+.pagination button:disabled {
+  color: #555;
+  background: #333;
+  cursor: not-allowed;
 }

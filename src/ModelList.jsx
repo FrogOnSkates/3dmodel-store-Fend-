@@ -8,11 +8,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import './index.css';
 
 // Component to render each 3D model in the card
-function ModelViewer({ modelUrl, scale }) {
+function ModelViewer({ modelUrl, scale = 0.5, cameraPosition = [0, 0, 10], cameraRotation = [0, 0, 0] }) {
   const [scene, setScene] = useState(null);
-
-  // Define a default scale if none is provided
-  const modelScale = scale && scale.length === 3 ? scale : [0.5, 0.5, 0.5];
 
   useEffect(() => {
     if (modelUrl) {
@@ -33,11 +30,13 @@ function ModelViewer({ modelUrl, scale }) {
   if (!scene) return <p>Loading model...</p>;
 
   return (
-    <Canvas camera={{ position: [0, 0, 10], fov: 50 }}>
+    <Canvas
+      camera={{ position: cameraPosition, rotation: cameraRotation, fov: 50 }}
+    >
       <ambientLight intensity={0.8} />
       <directionalLight position={[5, 5, 5]} intensity={1} />
       <Suspense fallback={null}>
-        <primitive object={scene} scale={modelScale} />
+        <primitive object={scene} scale={[scale, scale, scale]} />
       </Suspense>
       <OrbitControls enableZoom={false} maxPolarAngle={Math.PI / 2} minPolarAngle={Math.PI / 2} />
     </Canvas>
@@ -57,11 +56,20 @@ export default function ModelList() {
         "modelUrl": modelFile.asset->url,
         "thumbnailUrl": thumbnail.asset->url,
         rotation,
-        scale
+        scale,
+        cameraPosition,
+        cameraRotation
       }`)
       .then((data) => {
-        console.log("Fetched models with URLs:", data);
-        setModels(data);
+        const processedData = data.map((model) => ({
+          ...model,
+          scale: model.scale || 0.5, // Default scale if not provided
+          cameraPosition: model.cameraPosition || [0, 0, 10], // Default camera position if not provided
+          cameraRotation: model.cameraRotation || [0, 0, 0], // Default camera rotation if not provided
+        }));
+        
+        console.log("Fetched models with data:", processedData);
+        setModels(processedData.reverse()); // Ensure latest models appear first
       })
       .catch((error) => console.error("Error fetching models:", error));
   }, []);
@@ -79,7 +87,12 @@ export default function ModelList() {
           onClick={() => setSelectedModel(model)}
         >
           {model.modelUrl ? (
-            <ModelViewer modelUrl={model.modelUrl} scale={model.scale} />
+            <ModelViewer 
+              modelUrl={model.modelUrl} 
+              scale={model.scale} 
+              cameraPosition={model.cameraPosition} 
+              cameraRotation={model.cameraRotation} 
+            />
           ) : (
             model.thumbnailUrl && (
               <img src={model.thumbnailUrl} alt={model.title} className="model-thumbnail" />
@@ -91,6 +104,7 @@ export default function ModelList() {
           </div>
         </div>
       ))}
+
       {selectedModel && (
         <ModelPopup
           isOpen={true}
